@@ -1,0 +1,59 @@
+---
+title: "Table 1 Oct 7"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(here)
+here()
+finaldata<-read.csv(here("finaldata.csv"),header=TRUE)
+library(table1)
+library(tableone)
+
+label(finaldata$region)<-"Region"
+label(finaldata$gdp1000)<-"GDP per Capita"
+label(finaldata$popdens)<-"Population Density"
+label(finaldata$urban)<-"Urban Residence"
+label(finaldata$male_edu)<-"Male Education"
+label(finaldata$matmor)<-"Maternal Mortality Rate"
+label(finaldata$infmor)<-"Infant Mortality Rate"
+label(finaldata$neomor)<-"Neonatal Mortality Rate"
+label(finaldata$un5mor)<-"Under 5 Mortality Rate"
+finaldata$drought<-as.factor(finaldata$drought)
+label(finaldata$drought)<-"Drought"
+finaldata$earthquake<-as.factor(finaldata$earthquake)
+label(finaldata$earthquake)<-"Earthquake"
+finaldata$armconf1<-as.factor(finaldata$armconf1)
+label(finaldata$armconf1)<-"Armed Conflict"
+library(dplyr)
+filtereddata<-finaldata %>% filter(year==2000)
+
+tableone<-table1(~region+gdp1000+popdens+urban+male_edu+matmor+infmor+neomor+
+                   un5mor+drought+earthquake|armconf1,data=filtereddata,
+                 caption="Table of Baseline Characteristics")
+print(tableone)
+
+
+```
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).

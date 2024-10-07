@@ -1,0 +1,63 @@
+---
+title: "Figure 1 Oct 7"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+finaldata<-read.csv(here("finaldata.csv"))
+finaldata$matmor<-as.numeric(finaldata$matmor)
+
+
+mortality2000to2017<-finaldata %>% filter(year==2000|year==2017)
+
+increasecountries<-mortality2000to2017 %>% group_by(ISO) %>%
+  pivot_wider(names_from=year,values_from=matmor) %>% filter(`2017` > `2000`) %>%
+  select(ISO)
+
+dataincreased<-finaldata %>% filter(ISO %in% increasecountries$ISO)
+
+
+dataincreased |>
+  ggplot(aes(x=year, y=matmor, group=ISO))+
+  geom_line(color="skyblue")+xlim(c(2000,2017))+
+  labs(y="Maternal Mortality",x="Year")+theme_bw()
+
+dataincreased |>
+  ggplot(aes(x+year,y=matmor,group=ISO))+
+  geom_line(aes(color=as.factor(armconf1)),alpha=0.5)+xlim(c(2000,2017))+
+  scale_y_continuous(trans='log10')+
+  labs(y="Maternal Mortality",x="Year",color="Armed Conflict")+theme_bw()
+
+ggplot(dataincreased, aes(x = year, y = matmor, group = ISO, color = ISO)) +
+  geom_line() +
+  labs(x = "Year", y = "Maternal Mortality") +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  guides(color = guide_legend(nrow = 2))
+```
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
